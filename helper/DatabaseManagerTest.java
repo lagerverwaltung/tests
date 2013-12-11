@@ -17,6 +17,7 @@ import model.Lagerfach;
 import model.Teilebestand;
 import model.Warenbewegung;
 import model.ZielPosition;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -43,6 +44,57 @@ public class DatabaseManagerTest {
         } catch (SQLException ex) {
             fail("DB konnte nicht initalisiert werden!");
         }
+    
+    }
+    @Test
+    public void wertZuweisung()
+    {
+     int breite=4;
+     int hoehe=5;
+     int tiefe=7;
+     int kleinVE=4;
+     int mittelVE=6;
+     int grossVE=64;
+     Lager lfrei = new Lager();
+     lfrei.setBreite(breite);
+     lfrei.setHoehe(hoehe);
+     lfrei.setTiefe(tiefe);
+     lfrei.setKleinVE(kleinVE);
+     lfrei.setMittelVE(mittelVE);
+     lfrei.setGrossVE(grossVE);
+     lfrei.setLagerort(Lager.Lagerort.freilager);
+        try {
+            lfrei.save();
+        } catch (SQLException ex) {
+            fail("Save Fail!");
+        }
+    assertEquals(lfrei.getBreite(),breite);
+    assertEquals(lfrei.getHoehe(),hoehe);
+    assertEquals(lfrei.getTiefe(),tiefe);
+    assertEquals(lfrei.getKleinVE(),kleinVE);
+    assertEquals(lfrei.getMittelVE(),mittelVE);
+    assertEquals(lfrei.getGrossVE(),grossVE);
+    assertEquals(lfrei.getLagerort(),Lager.Lagerort.freilager);
+    
+    }
+    
+    @Test
+    public void lagerortTest()
+    {
+        Lager frei= new Lager();
+        frei.setLagerort(Lager.Lagerort.freilager);
+        Lager hoch= new Lager();
+        hoch.setLagerort(Lager.Lagerort.hochregal);
+        try {
+            frei.save();
+            hoch.save();
+        } catch (SQLException ex) {
+            fail("Save failed.");
+        }
+        
+        assertEquals(frei.getLagerort(),Lager.Lagerort.freilager);
+        assertEquals(hoch.getLagerort(),Lager.Lagerort.hochregal);
+        
     
     }
     
@@ -106,8 +158,8 @@ public class DatabaseManagerTest {
      
     }
     
-    @AfterClass
-    public static void cleanDB()
+    @After
+    public void cleanDB()
     {
         try {
             Dao<Lager,Integer> lagerDao= dbm.getLagerDao();
