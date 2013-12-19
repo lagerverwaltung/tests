@@ -9,16 +9,8 @@ package helper;
 import com.j256.ormlite.dao.Dao;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Lager;
-import model.Lagerbestand;
-import model.Lagerfach;
-import model.Teilebestand;
-import model.Warenbewegung;
-import model.ZielPosition;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -28,13 +20,16 @@ import org.junit.BeforeClass;
  * @author smodlich
  */
 
-public class DatabaseManagerTest {
+public class LagerInitalisierenDBTest {
     
     private static DatabaseManager dbm;
             
-    public DatabaseManagerTest() {
+    public LagerInitalisierenDBTest() {
     }
     
+    /**
+     * Setup Methode zur Einrichtung der DB. 
+     */
     @BeforeClass
     public static void setup()
     {
@@ -46,6 +41,9 @@ public class DatabaseManagerTest {
         }
     
     }
+    /**
+     * Testet Werte Zuweisung, und liest die Werte wieder aus.
+     */
     @Test
     public void wertZuweisung()
     {
@@ -77,7 +75,9 @@ public class DatabaseManagerTest {
     assertEquals(lfrei.getLagerort(),Lager.Lagerort.freilager);
     
     }
-    
+    /**
+     * Initalisiert beide Lager und gibt ihnen die Lagerorte, anschließend Test auf Lagerorte
+     */
     @Test
     public void lagerortTest()
     {
@@ -97,7 +97,9 @@ public class DatabaseManagerTest {
         
     
     }
-    
+    /**
+     * Testet ob beiden Lagern eine einzigartige ID zugewiesen wird.
+     */
     @Test
     public void lagerIDTest()           
     {
