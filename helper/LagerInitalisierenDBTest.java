@@ -30,7 +30,7 @@ public class LagerInitalisierenDBTest {
     /**
      * Setup Methode zur Einrichtung der DB. 
      */
-    @BeforeClass
+    @BeforeClass 
     public static void setup()
     {
         try {
