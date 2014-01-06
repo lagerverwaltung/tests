@@ -75,7 +75,7 @@ public class LagerInitalisierenDBTest {
 
     /**
      * Initalisiert beide Lager und gibt ihnen die Lagerorte, anschließend Test
-     * auf Lagerorte
+     * ob Lagerorte korrekt gespeichert wurden
      */
     @Test
     public void lagerortTest() {
