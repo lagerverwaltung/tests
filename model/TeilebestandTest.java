@@ -4,7 +4,13 @@
  */
 package model;
 
+import com.j256.ormlite.dao.Dao;
+import helper.DatabaseManager;
+import helper.Misc;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,23 +24,30 @@ import static org.junit.Assert.*;
  */
 public class TeilebestandTest {
     
+    private static DatabaseManager dbm;
+    
     public TeilebestandTest() {
     }
     
-    @BeforeClass
-    public static void setUpClass() {
-    }
     
     @AfterClass
     public static void tearDownClass() {
     }
     
-    @Before
-    public void setUp() {
+   @BeforeClass
+    public static void setup() {
+        try {
+            DatabaseManager.setTest(true);
+            dbm = new DatabaseManager();
+        } catch (SQLException ex) {
+            fail("DB konnte nicht initalisiert werden!");
+        }
+
     }
     
     @After
     public void tearDown() {
+        
     }
 
      /**
@@ -74,19 +87,17 @@ public class TeilebestandTest {
        String zeichNr = "Test";
        float preis = 3;
        int ve = 1;
-       Teilebestand teil = new Teilebestand();
-       teil.setBezeichnung(bez);
-       teil.setMaterialgruppe(matGr);
-       teil.setPreis(preis);
-       teil.setTyp(Teilebestand.Typ.kaufteile);
-       teil.setZeichnungsnummer(zeichNr);
-       teil.setVe(ve);
-       try {
+        try {
+            Teilebestand teil = new Teilebestand();
+            teil.setBezeichnung(bez);
+            teil.setMaterialgruppe(matGr);
+            teil.setPreis(preis);
+            teil.setTyp(Teilebestand.Typ.kaufteile);
+            teil.setZeichnungsnummer(zeichNr);
+            teil.setVe(ve);
+      
            teil.save();
-       }
-       catch (SQLException ex){
-           fail("Save failed");
-       }
+       
         assertEquals(teil.getBezeichnung(), bez);
         assertEquals(teil.getMaterialgruppe(), matGr);
         assertEquals(teil.getPreis(), preis, 0.1);
@@ -96,7 +107,27 @@ public class TeilebestandTest {
         assertNotNull(ve);
         assertEquals(teil.getZeichnungsnummer(), zeichNr);
         
+        } catch (SQLException ex) {
+            fail(ex.getSQLState());
+        }
        
+       
+     
+       
+    }
+    
+    @After
+    public void cleanDB() {
+        try {
+            Dao<Lager, Integer> lagerDao = dbm.getLagerDao();
+            List<Lager> lagerList = lagerDao.queryForAll();
+            lagerDao.delete(lagerList);
+
+        } catch (SQLException ex) {
+            System.out.println("Deletion Error!");
+        }
+        DatabaseManager.setTest(false);
+
     }
 
 }

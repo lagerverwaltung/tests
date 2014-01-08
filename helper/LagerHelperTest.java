@@ -21,6 +21,7 @@ public class LagerHelperTest {
 
     /**
      * Test of validateLagerData method, of class LagerHelper.
+     * Testet die Lagervalidierung
      */
     @Test
     public void testValidateLagerData() {

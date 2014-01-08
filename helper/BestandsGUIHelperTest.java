@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package view;
+package helper;
 
+import helper.BestandsGUIHelper;
 import com.j256.ormlite.dao.Dao;
 import helper.DatabaseManager;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import view.BestandsaenderungFrame;
 
 /**
  *
@@ -68,9 +70,6 @@ public class BestandsGUIHelperTest {
     errors.clear();
     errors=help.validateLagerbestandData(1, "10", "10.10.2014", null, new ArrayList<HashMap>());
     assertTrue(errors.containsKey(help.NO_GRUND));
-    errors.clear();
-    errors=help.validateLagerbestandData(1, "10", null, "Grund", new ArrayList<HashMap>());
-    assertTrue(errors.containsKey(help.NO_DATE));
     errors.clear();
     
         int breite = 4;
@@ -139,6 +138,7 @@ public class BestandsGUIHelperTest {
         } catch (SQLException ex) {
             System.out.println("Deletion Error!");
         }
+        DatabaseManager.setTest(false);
 
     }
 }

@@ -166,6 +166,7 @@ public class LagerInitalisierenDBTest {
         } catch (SQLException ex) {
             System.out.println("Deletion Error!");
         }
+        DatabaseManager.setTest(false);
 
     }
 }
