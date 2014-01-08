@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Lager;
 import model.Lagerbestand;
 import model.Lagerfach;
@@ -45,7 +47,53 @@ public class BestandsGUIHelperTest {
     }
 
     
-    
+    public void testKapazitaetsTest()
+    {
+        BestandsGUIHelper help = new BestandsGUIHelper();
+        
+        int breite = 4;
+        int hoehe = 5;
+        int tiefe = 7;
+        int kleinVE = 4;
+        int mittelVE = 6;
+        int grossVE = 6;
+        Lager lfrei = new Lager();
+        lfrei.setBreite(breite);
+        lfrei.setHoehe(hoehe);
+        lfrei.setTiefe(tiefe);
+        lfrei.setKleinVE(kleinVE);
+        lfrei.setMittelVE(mittelVE);
+        lfrei.setGrossVE(grossVE);
+        lfrei.setLagerort(Lager.Lagerort.freilager);
+        try {
+            lfrei.save();
+        } catch (SQLException ex) {
+            fail("Save Fail!");
+        }
+        try {
+            List<Lagerfach> list= lfrei.getFaecher();
+            Lagerfach fach = list.get(0);
+            Teilebestand tb= new Teilebestand();
+            tb.setBezeichnung("Teil");
+            tb.setIdentnummer(1);
+            tb.setMaterialgruppe("MG");
+            tb.setPreis(2);
+            tb.setTyp(Teilebestand.Typ.kaufteile);
+            tb.setVe(2);
+            tb.setZeichnungsnummer("Z");
+            tb.save();
+           
+          HashMap<Integer,String> errors=  help.kapazitaetsTest(fach, tb, 2, 0);
+            
+            if (!errors.isEmpty())
+                fail("Kapizitätstest Fehler");
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getSQLState());
+        }
+        
+       
+    }
     @Test
     public void validateLagerbestandDataTest() 
     {

@@ -18,14 +18,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import model.Lager;
 import model.Lagerbestand;
 import model.Lagerfach;
 import model.Teilebestand;
+import model.Warenbewegung;
+import model.ZielPosition;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import static view.BestandsaenderungFrame.SPLITTEN;
+import static view.BestandsaenderungFrame.UMLAGERN;
 
 /**
  *
@@ -83,6 +88,7 @@ public class BestandsaenderungFrameTest {
         try {
             BestandsaenderungFrame frame = new BestandsaenderungFrame(BestandsaenderungFrame.EINLAGERN_TEILEBESTAND,teil.getIdentnummer(),0);
             frame.setVisible(false);
+            
             teil.save();
             frame.bestandsGuiHelper.setTeilID(teil.getIdentnummer());
            
@@ -126,18 +132,60 @@ public class BestandsaenderungFrameTest {
            assertEquals(l.getLagerfach().getY(),y);
            assertEquals(l.getLagerfach().getZ(),z);
            
+           ArrayList <ZielPosition> zp=new ArrayList();
+           ZielPosition zpp= new ZielPosition();
+           zpp.setLagerfach(faecher[0]);
+           zpp.setMenge(menge);
+           zp.add(zpp);
+           zpp.save();
+           
+           
+           
+           warenBewegungsTest(l,BestandsaenderungFrame.EINLAGERN_TEILEBESTAND,hbDatum,zp);
+           
+           
+           
         } catch (SQLException ex) {
             fail(ex.getSQLState());
         }
         
+        
+        
+        /*
         try {
             Thread.sleep(290000000);
         } catch (InterruptedException ex) {
             Logger.getLogger(BestandsaenderungFrameTest.class.getName()).log(Level.SEVERE, null, ex);
         }
+                */
         
     
     }
+    public void warenBewegungsTest(Lagerbestand quellLb,int action, Date hbDate,ArrayList<ZielPosition> zp)
+    {
+            Warenbewegung wb = new Warenbewegung();
+            Date today= new Date();
+            try
+            {
+             wb.logWarenbewegung(quellLb,action, quellLb.getAnschaffungsgrund(),today, hbDate, "Lagerverwalter", 
+                                zp);
+            
+            }
+           
+            catch(SQLException ex)
+            {
+             fail(ex.getSQLState());
+            }
+            
+            assertTrue(wb.getWarenBewegungsID()!=0);
+            assertEquals(wb.getActionCode(),action);
+            assertEquals(wb.getAnschaffungsgrund(),quellLb.getAnschaffungsgrund());
+            assertEquals(wb.getHaltbarkeitsDatum(),hbDate);
+            assertEquals(wb.getDatum(),today);
+            assertEquals(wb.getLagerbestand(),quellLb);
+            assertEquals(wb.getVerantwortlicher(),"Lagerverwalter");
+    }
+    
     
     @After
     public void cleanDB() {
